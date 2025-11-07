@@ -20,23 +20,21 @@ router.get('/dashboard', auth, async (req, res) => {
   try {
     const stats = {};
 
+    // Query to filter notices by user's role ONLY
+    const userNoticesQuery = {
+      isActive: true,
+      'targetAudience.roles': req.user.role  // Only show if user's role is in target
+    };
+
     if (req.user.role === 'admin') {
       stats.totalUsers = await User.countDocuments();
-      stats.totalNotices = await Notice.countDocuments();
-      stats.activeNotices = await Notice.countDocuments({ isActive: true });
-      stats.recentNotices = await Notice.find()
+      stats.totalNotices = await Notice.countDocuments(userNoticesQuery);
+      stats.activeNotices = await Notice.countDocuments(userNoticesQuery);
+      stats.recentNotices = await Notice.find(userNoticesQuery)
         .populate('author', 'name')
         .sort({ createdAt: -1 })
         .limit(5);
     } else {
-      const userNoticesQuery = {
-        isActive: true,
-        $or: [
-          { 'targetAudience.roles': req.user.role },
-          { 'targetAudience.departments': req.user.department }
-        ]
-      };
-      
       stats.totalNotices = await Notice.countDocuments(userNoticesQuery);
       stats.unreadNotices = await Notice.countDocuments({
         ...userNoticesQuery,

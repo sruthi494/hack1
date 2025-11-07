@@ -10,11 +10,6 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-4">
-              <img 
-                src="/vignan-logo.svg" 
-                alt="Vignan University Logo" 
-                className="w-16 h-16"
-              />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
                   Smart College Notice Board & Communication Portal
@@ -22,26 +17,7 @@ const HomePage = () => {
                 <p className="text-vignan-orange font-semibold">Vignan University</p>
               </div>
             </div>
-            <div className="flex space-x-4">
-              <Link
-                to="/student-login"
-                className="bg-vignan-blue text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Student Login
-              </Link>
-              <Link
-                to="/faculty-login"
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Faculty Login
-              </Link>
-              <Link
-                to="/admin-login"
-                className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                Admin Login
-              </Link>
-            </div>
+
           </div>
         </div>
       </header>
@@ -51,9 +27,10 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="flex justify-center mb-8">
             <img 
-              src="/vignan-logo.svg" 
+              src="/vignan-logo.png" 
               alt="Vignan University Logo" 
-              className="w-24 h-24"
+              className="w-auto object-contain"
+              style={{ width: '500px', maxWidth: '90%' }}
             />
           </div>
           <h2 className="text-5xl font-bold text-gray-900 mb-6">
@@ -63,26 +40,7 @@ const HomePage = () => {
             Stay connected with real-time notices, announcements, and updates. 
             Never miss important information from your university again.
           </p>
-          <div className="flex justify-center space-x-4">
-            <Link
-              to="/student-login"
-              className="bg-vignan-blue text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
-            >
-              Student Login
-            </Link>
-            <Link
-              to="/faculty-login"
-              className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 transition-colors"
-            >
-              Faculty Login
-            </Link>
-            <Link
-              to="/admin-login"
-              className="bg-purple-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition-colors"
-            >
-              Admin Login
-            </Link>
-          </div>
+
         </div>
       </section>
 
@@ -101,7 +59,7 @@ const HomePage = () => {
             </Link>
             <Link
               to="/faculty-login"
-              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 border-transparent hover:border-green-500"
+              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 border-transparent hover:border-vignan-blue"
             >
               <div className="text-4xl mb-4">👨‍🏫</div>
               <h4 className="text-xl font-semibold mb-2">Faculty Login</h4>
@@ -109,21 +67,14 @@ const HomePage = () => {
             </Link>
             <Link
               to="/admin-login"
-              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 border-transparent hover:border-purple-500"
+              className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 border-transparent hover:border-vignan-blue"
             >
               <div className="text-4xl mb-4">⚙️</div>
               <h4 className="text-xl font-semibold mb-2">Admin Login</h4>
               <p className="text-gray-600">System administration and management</p>
             </Link>
           </div>
-          <div className="mt-8">
-            <Link
-              to="/forgot-password"
-              className="text-vignan-blue hover:text-blue-700 font-medium"
-            >
-              Forgot your password?
-            </Link>
-          </div>
+
         </div>
       </section>
 

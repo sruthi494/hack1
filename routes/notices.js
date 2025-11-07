@@ -25,12 +25,13 @@ router.get('/', auth, async (req, res) => {
     
     console.log('📋 Fetching notices for user:', req.user.name, '(', req.user.role, ')');
     
-    // Simple query - show ALL active notices to ALL users
+    // IMPORTANT: Only show notices where user's role is in targetAudience.roles
     let query = {
-      isActive: true
+      isActive: true,
+      'targetAudience.roles': req.user.role  // Filter by user's role
     };
 
-    // Apply filters if provided
+    // Apply additional filters if provided
     if (category) query.category = category;
     if (department) query['targetAudience.departments'] = department;
 
@@ -42,7 +43,12 @@ router.get('/', auth, async (req, res) => {
 
     const total = await Notice.countDocuments(query);
 
-    console.log('   ✅ Found', notices.length, 'notices');
+    console.log('   ✅ Found', notices.length, 'notices for role:', req.user.role);
+
+    // Set cache control headers to prevent browser caching
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
 
     res.json({
       notices,

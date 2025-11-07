@@ -72,7 +72,7 @@ const StudentLoginPage = () => {
                 type="text"
                 required
                 className="input-field mt-1"
-                placeholder="Enter your Student ID (e.g., 231FA04017)"
+                placeholder="Enter your Student ID"
                 value={formData.loginId}
                 onChange={handleChange}
                 style={{ textTransform: 'uppercase' }}
@@ -130,14 +130,7 @@ const StudentLoginPage = () => {
             </button>
           </div>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Sample Student ID: 231FA04017
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Password: 231FA04017
-            </p>
-          </div>
+
         </form>
 
         <div className="mt-6">

@@ -44,11 +44,11 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-purple-600 rounded-xl flex items-center justify-center">
+            <div className="w-20 h-20 bg-vignan-blue rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-3xl">⚙️</span>
             </div>
           </div>
@@ -72,7 +72,7 @@ const AdminLoginPage = () => {
                 type="text"
                 required
                 className="input-field mt-1"
-                placeholder="Enter your Employee ID (e.g., 231FA04040)"
+                placeholder="Enter your Employee ID"
                 value={formData.loginId}
                 onChange={handleChange}
                 style={{ textTransform: 'uppercase' }}
@@ -113,7 +113,7 @@ const AdminLoginPage = () => {
             <div className="text-sm">
               <Link
                 to="/forgot-password"
-                className="font-medium text-purple-600 hover:text-purple-700"
+                className="font-medium text-vignan-blue hover:text-blue-700"
               >
                 Forgot your password?
               </Link>
@@ -124,20 +124,13 @@ const AdminLoginPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Login as Admin'}
             </button>
           </div>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Employee ID: 231FA04040
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Password: 231FA04040
-            </p>
-          </div>
+
         </form>
 
         <div className="mt-6">

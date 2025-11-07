@@ -17,14 +17,17 @@ const CreateNoticePage = () => {
     category: 'general',
     priority: 'medium',
     targetAudience: {
-      roles: ['student', 'faculty', 'admin'],
+      roles: [],  // Empty - admin must select who sees it
       departments: ['Computer Science Engineering'],
-      years: []
+      years: [],
+      sections: []  // Add sections field
     },
     scheduledDate: '',
     expiryDate: ''
   });
   const [attachments, setAttachments] = useState([]);
+  const [departmentSections, setDepartmentSections] = useState({});
+  const [showAdvancedMapping, setShowAdvancedMapping] = useState(false);
 
   const categories = [
     { value: 'academic', label: 'Academic' },
@@ -62,6 +65,7 @@ const CreateNoticePage = () => {
   ];
 
   const years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
+  const sections = ['SEC 1', 'SEC 2', 'SEC 3', 'SEC 4', 'SEC 5'];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -92,8 +96,32 @@ const CreateNoticePage = () => {
     setAttachments(prev => prev.filter((_, i) => i !== index));
   };
 
+  const handleDepartmentSectionChange = (department, section) => {
+    setDepartmentSections(prev => {
+      const deptSections = prev[department] || [];
+      const newSections = deptSections.includes(section)
+        ? deptSections.filter(s => s !== section)
+        : [...deptSections, section];
+      
+      if (newSections.length === 0) {
+        const { [department]: removed, ...rest } = prev;
+        return rest;
+      }
+      
+      return { ...prev, [department]: newSections };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate that at least one role is selected
+    if (formData.targetAudience.roles.length === 0) {
+      alert('ERROR: Please select at least one audience!\n\nYou must check at least one: Students, Faculty, or Admin');
+      toast.error('Please select who should see this notice');
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -103,7 +131,13 @@ const CreateNoticePage = () => {
       submitData.append('content', formData.content);
       submitData.append('category', formData.category);
       submitData.append('priority', formData.priority);
-      submitData.append('targetAudience', JSON.stringify(formData.targetAudience));
+      
+      // Include department-section mapping if advanced mode is used
+      const targetAudienceData = {
+        ...formData.targetAudience,
+        departmentSections: showAdvancedMapping ? departmentSections : {}
+      };
+      submitData.append('targetAudience', JSON.stringify(targetAudienceData));
       
       if (formData.scheduledDate) {
         submitData.append('scheduledDate', formData.scheduledDate);
@@ -273,21 +307,26 @@ const CreateNoticePage = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Roles (Pre-selected for everyone)
+                    Who should see this notice? * (Select at least one)
                   </label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-4">
                     {roles.map(role => (
-                      <label key={role.value} className="flex items-center">
+                      <label key={role.value} className="flex items-center cursor-pointer">
                         <input
                           type="checkbox"
-                          className="rounded border-gray-300 text-vignan-blue focus:ring-vignan-blue"
+                          className="rounded border-gray-300 text-vignan-blue focus:ring-vignan-blue h-5 w-5"
                           checked={formData.targetAudience.roles.includes(role.value)}
                           onChange={() => handleTargetAudienceChange('roles', role.value)}
                         />
-                        <span className="ml-2 text-sm text-gray-700">{role.label}</span>
+                        <span className="ml-2 text-sm font-medium text-gray-700">{role.label}</span>
                       </label>
                     ))}
                   </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    ✓ Check "Students" - Only students will see this notice<br/>
+                    ✓ Check "Faculty" - Only faculty will see this notice<br/>
+                    ✓ Check both - Both students and faculty will see this notice
+                  </p>
                 </div>
 
                 <div>
@@ -329,6 +368,74 @@ const CreateNoticePage = () => {
                     </div>
                   </div>
                 )}
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Sections (Optional)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowAdvancedMapping(!showAdvancedMapping)}
+                      className="text-xs text-vignan-blue hover:text-blue-700 font-medium"
+                    >
+                      {showAdvancedMapping ? '← Simple Mode' : 'Advanced: Different sections per department →'}
+                    </button>
+                  </div>
+
+                  {!showAdvancedMapping ? (
+                    // Simple mode - same sections for all departments
+                    <div>
+                      <div className="flex flex-wrap gap-2">
+                        {sections.map(section => (
+                          <label key={section} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              className="rounded border-gray-300 text-vignan-blue focus:ring-vignan-blue"
+                              checked={formData.targetAudience.sections.includes(section)}
+                              onChange={() => handleTargetAudienceChange('sections', section)}
+                            />
+                            <span className="ml-2 text-sm text-gray-700">{section}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Leave unchecked to send to all sections
+                      </p>
+                    </div>
+                  ) : (
+                    // Advanced mode - different sections per department
+                    <div className="space-y-4 bg-blue-50 p-4 rounded-lg">
+                      <p className="text-xs text-gray-600 mb-3">
+                        Select specific sections for each department:
+                      </p>
+                      {formData.targetAudience.departments.map(dept => (
+                        <div key={dept} className="bg-white p-3 rounded border border-blue-200">
+                          <h5 className="text-sm font-medium text-gray-900 mb-2">{dept}</h5>
+                          <div className="flex flex-wrap gap-2">
+                            {sections.map(section => (
+                              <label key={section} className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  className="rounded border-gray-300 text-vignan-blue focus:ring-vignan-blue"
+                                  checked={departmentSections[dept]?.includes(section) || false}
+                                  onChange={() => handleDepartmentSectionChange(dept, section)}
+                                />
+                                <span className="ml-2 text-sm text-gray-700">{section}</span>
+                              </label>
+                            ))}
+                          </div>
+                          {(!departmentSections[dept] || departmentSections[dept].length === 0) && (
+                            <p className="text-xs text-gray-500 mt-1">All sections</p>
+                          )}
+                        </div>
+                      ))}
+                      <p className="text-xs text-blue-600 mt-2">
+                        💡 Example: CSE → SEC 1, SEC 2 | ECE → SEC 3
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
