@@ -3,7 +3,7 @@ import axios from 'axios';
 // Add a request interceptor to automatically add the token
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
     console.log('Axios Interceptor - Token:', token ? 'Found' : 'Not found');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -23,7 +23,7 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      localStorage.removeItem('token');
+      localStorage.removeItem('authToken');
       window.location.href = '/';
     }
     return Promise.reject(error);
